@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>잇올 고객관리 로드맵</title>
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+        
+        :root {
+            --bg-main: #f8fafc;
+            --header-bg: #1e293b; /* 세련된 챠콜 그레이 */
+            --primary: #4f46e5;   /* 신뢰감 있는 인디고 블루 */
+            --primary-soft: #eef2ff;
+            --accent: #6366f1;
+            --success: #059669;   /* 차분한 에메랄드 */
+            --ongoing: #d97706;   /* 차분한 앰버 */
+            --error: #dc2626;     /* 소프트 레드 */
+            --text-main: #0f172a;
+            --text-sub: #475569;
+            --line-color: #e2e8f0;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.6;
+            scroll-behavior: smooth;
+        }
+
+        .container { max-width: 1100px; margin: 0 auto; }
+
+        header {
+            background: var(--header-bg);
+            color: var(--white);
+            padding: 45px 30px;
+            border-radius: 16px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        header h1 { margin: 0 0 10px 0; font-size: 2.2em; letter-spacing: -1px; font-weight: 800; }
+        header p { color: #94a3b8; font-size: 1.1em; margin: 0; font-weight: 400; line-height: 1.5; }
+
+        /* 마스터 플로우 차트 (차분한 디자인) */
+        .master-flow-wrapper {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 35px 40px;
+            margin-bottom: 40px;
+            border: 1px solid var(--line-color);
+        }
+        .master-flow-title {
+            text-align: center;
+            font-weight: 700;
+            color: var(--text-sub);
+            margin-bottom: 35px;
+            font-size: 1em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .intuitive-flow {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            position: relative;
+        }
+        
+        .flow-zone {
+            text-align: center;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 1.5px dashed;
+        }
+        .win-zone { background: #f0fdf4; border-color: var(--success); color: var(--success); }
+        .loss-zone { background: #fef2f2; border-color: var(--error); color: var(--error); }
+
+        .main-track {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            position: relative;
+        }
+        .track-line {
+            position: absolute;
+            top: 50%;
+            left: 50px;
+            right: 50px;
+            height: 2px;
+            background: var(--line-color);
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+        .track-node {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .track-node:hover { transform: translateY(-3px); }
+        .node-circle {
+            width: 44px;
+            height: 44px;
+            background: var(--white);
+            border: 2px solid var(--header-bg);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--header-bg);
+            font-size: 1em;
+            margin: 8px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .start-node .node-circle { background: var(--header-bg); color: var(--white); }
+        .node-label { font-weight: 600; color: var(--text-sub); font-size: 0.85em; }
+        .arrow-up, .arrow-down { font-weight: 900; font-size: 1.2em; line-height: 1; }
+        .arrow-up { color: var(--success); }
+        .arrow-down { color: var(--error); }
+
+        /* 탭 메뉴 스타일 */
+        .tab-menu {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 40px;
+            background: #f1f5f9;
+            padding: 5px;
+            border-radius: 10px;
+        }
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1em;
+            font-weight: 600;
+            color: var(--text-sub);
+            cursor: pointer;
+            border-radius: 7px;
+            transition: all 0.2s ease;
+            flex: 1;
+        }
+        .tab-btn.active {
+            color: var(--primary);
+            background: var(--white);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* 상세 단계 블록 */
+        .timeline { position: relative; padding-left: 40px; }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 15px; top: 0; bottom: 0; width: 2px;
+            background: var(--line-color);
+        }
+
+        .step-block {
+            background: var(--white);
+            border-radius: 12px;
+            margin-bottom: 50px;
+            position: relative;
+            border: 1px solid var(--line-color);
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        @keyframes sectionHighlight {
+            0% { border-color: var(--primary); box-shadow: 0 0 20px rgba(79, 70, 229, 0.2); background: var(--primary-soft); }
+            100% { border-color: var(--line-color); box-shadow: none; background: var(--white); }
+        }
+        .highlight-active { animation: sectionHighlight 1.5s ease-out; }
+        
+        .step-block::before {
+            content: '';
+            position: absolute; left: -34px; top: 22px;
+            width: 16px; height: 16px;
+            background: var(--primary);
+            border: 3px solid var(--bg-main);
+            border-radius: 50%;
+            z-index: 2;
+        }
+
+        .step-header {
+            background: #fcfdfe;
+            padding: 18px 30px;
+            border-bottom: 1px solid var(--line-color);
+            display: flex; align-items: center;
+        }
+        .step-num { font-size: 1.2em; font-weight: 800; color: var(--primary); margin-right: 12px; }
+        .step-title { font-size: 1.1em; font-weight: 700; color: var(--text-main); }
+
+        .step-content-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 1fr;
+            gap: 0;
+            border-bottom: 1px solid var(--line-color);
+        }
+        .content-pane { padding: 30px; }
+        .content-pane:first-child { border-right: 1px solid var(--line-color); }
+        .content-pane h4 { 
+            margin-top: 0; color: var(--header-bg); font-size: 1.05em; margin-bottom: 20px; 
+            display: flex; align-items: center; font-weight: 700;
+        }
+        .content-pane h4::before { content: ''; width: 3px; height: 14px; background: var(--primary); margin-right: 10px; border-radius: 2px; }
+
+        .list-table { width: 100%; border-collapse: collapse; font-size: 0.95em; }
+        .list-table td { padding: 12px 10px; border-bottom: 1px solid #f8fafc; vertical-align: middle; }
+        .list-table td:first-child { font-weight: 600; color: var(--text-sub); width: 35%; }
+
+        .ui-checkbox {
+            accent-color: var(--primary);
+            width: 15px; height: 15px;
+            margin-right: 10px;
+            cursor: pointer;
+            vertical-align: middle;
+        }
+
+        .action-item { margin-bottom: 20px; padding: 15px; background: #f8fafc; border-radius: 8px; border: 1px solid #f1f5f9; }
+        .action-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.7em; font-weight: 700; margin-bottom: 6px; text-transform: uppercase; background: var(--primary); color: var(--white); }
+        .action-desc { font-size: 0.95em; font-weight: 700; color: var(--text-main); display: block; margin-bottom: 3px; }
+        .action-detail { font-size: 0.85em; color: var(--text-sub); display: block; line-height: 1.5; }
+
+        .branch-section { padding: 20px 30px; background: #fcfdfe; }
+        .branch-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+        .branch-card {
+            border-radius: 8px; padding: 15px; border: 1px solid var(--line-color);
+            background: var(--white); font-size: 0.85em; cursor: pointer; transition: all 0.2s;
+        }
+        .branch-card:hover { border-color: var(--primary); background: var(--primary-soft); }
+        .branch-card h5 { margin: 0 0 8px 0; font-size: 1em; font-weight: 700; }
+        .bc-success h5 { color: var(--success); }
+        .bc-ongoing { background: #fffcf0; }
+        .bc-ongoing h5 { color: var(--ongoing); }
+        .bc-error h5 { color: var(--error); }
+        .branch-card ul { padding-left: 18px; margin: 0; color: var(--text-sub); list-style-type: circle; }
+
+        /* 용어집/하이퍼링크 */
+        .glossary-link { color: var(--primary); text-decoration: none; border-bottom: 1px dashed var(--primary); cursor: pointer; }
+        .glossary-item {
+            background: var(--white); border-radius: 12px; padding: 25px; margin-bottom: 15px;
+            border: 1px solid var(--line-color); transition: all 0.4s ease;
+        }
+        @keyframes highlightGlow {
+            0% { border-color: var(--primary); background-color: var(--primary-soft); }
+            100% { border-color: var(--line-color); background-color: var(--white); }
+        }
+        .highlight-glow-active { animation: highlightGlow 1.5s ease-out forwards; }
+        .glossary-term {
+            display: inline-block; color: var(--primary); font-size: 1.1em; font-weight: 800;
+            margin-bottom: 10px; border-bottom: 2px solid var(--primary);
+        }
+        .glossary-def { color: var(--text-sub); font-size: 0.95em; line-height: 1.7; margin: 0; }
+
+        /* 로직별 안내 */
+        .logic-blank-box {
+            background: var(--white); border-radius: 12px; padding: 40px; margin-bottom: 25px;
+            border: 1px solid var(--line-color); border-left: 4px solid var(--header-bg);
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>잇올 고객관리 로드맵</h1>
+        <p>전략적 집요함과 데이터 기반의 무결점 세일즈 프로세스.<br>고객 생애 주기에 따른 유기적 응대 체계입니다.</p>
+    </header>
+
+    <div class="master-flow-wrapper">
+        <div class="master-flow-title">고객 관리 프로세스 맵</div>
+        
+        <div class="intuitive-flow">
+            <div class="flow-zone win-zone" onclick="openGlossary('def-success')">
+                <strong>🎯 <span class="glossary-link">결제 성공</span> EXIT</strong>
+                <span>영업 종료 및 즉시 <b>[웰컴/해피콜 로직]</b>으로 전환</span>
+            </div>
+
+            <div class="main-track">
+                <div class="track-line"></div>
+                <div class="track-node start-node"><div class="node-circle">IN</div><div class="node-label">DB 유입</div></div>
+                <a href="#step-1" class="track-node" onclick="handleStepClick(event, 'step-1')">
+                    <div class="arrow-up">↑</div><div class="node-circle">1차</div><div class="node-label">탐색/진단</div><div class="arrow-down">↓</div>
+                </a>
+                <a href="#step-2" class="track-node" onclick="handleStepClick(event, 'step-2')">
+                    <div class="arrow-up">↑</div><div class="node-circle">2차</div><div class="node-label">장애물분석</div><div class="arrow-down">↓</div>
+                </a>
+                <a href="#step-3" class="track-node" onclick="handleStepClick(event, 'step-3')">
+                    <div class="arrow-up">↑</div><div class="node-circle">3차</div><div class="node-label">현장경험</div><div class="arrow-down">↓</div>
+                </a>
+                <a href="#step-4" class="track-node" onclick="handleStepClick(event, 'step-4')">
+                    <div class="arrow-up">↑</div><div class="node-circle">4차</div><div class="node-label">희소성강조</div><div class="arrow-down">↓</div>
+                </a>
+                <a href="#step-5" class="track-node" onclick="handleStepClick(event, 'step-5')">
+                    <div class="arrow-up">↑</div><div class="node-circle">5차</div><div class="node-label">최종종결</div><div class="arrow-down">↓</div>
+                </a>
+            </div>
+
+            <div class="flow-zone loss-zone" onclick="openGlossary('def-loss')">
+                <strong>⚠️ <span class="glossary-link">거절/이탈</span> EXIT</strong>
+                <span>영업 종료 및 <b>[굿바이/아카이브 로직]</b>으로 전환</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-menu">
+        <button class="tab-btn active" onclick="openTab(event, 'tab1')">관리 로드맵</button>
+        <button class="tab-btn" onclick="openTab(event, 'tab2')">로직별 안내</button>
+        <button class="tab-btn" onclick="openTab(event, 'tab3')" id="glossary-tab-btn">용어집</button>
+    </div>
+
+    <div id="tab1" class="tab-content active">
+        <div class="timeline">
+            
+            <div class="step-block" id="step-1">
+                <div class="step-header"><span class="step-num">01</span><span class="step-title">탐색 및 결핍 진단 (Discovery)</span></div>
+                <div class="step-content-grid">
+                    <div class="content-pane">
+                        <h4>상담 중 필수 확보 데이터</h4>
+                        <table class="list-table">
+                            <tr><td><input type="checkbox" class="ui-checkbox"> 학습 베이스</td><td>학년(N수 여부), 준비 시험, 취약 과목</td></tr>
+                            <tr><td><input type="checkbox" class="ui-checkbox"> 이전 학습지</td><td>기존 이용 학원/독서실 명칭 및 기간</td></tr>
+                            <tr><td><input type="checkbox" class="ui-checkbox"> 이탈 트리거</td><td>그만두게 된 결정적 원인 (관리, 시설 등)</td></tr>
+                            <tr><td><input type="checkbox" class="ui-checkbox"> 상담 주도권</td><td>학생 본인 의지 vs 학부모 권유 비중</td></tr>
+                        </table>
+                    </div>
+                    <div class="content-pane">
+                        <h4>데이터 기반 전략 액션</h4>
+                        <div class="action-item">
+                            <span class="action-tag">SMS</span> <span class="action-desc">상담 감사 및 담당 매니저 프로필 전송</span>
+                            <span class="action-detail">"오늘 파악한 [학생명] 학생의 약점 보완을 위한 잇올 관리 가이드입니다."</span>
+                        </div>
+                        <div class="action-item">
+                            <span class="action-tag">콘텐츠</span> <span class="action-desc">이탈 사유별 맞춤 자료 발송</span>
+                            <span class="action-detail">불만 사항(시설/관리 등)을 즉시 반전시킬 수 있는 잇올의 솔루션 링크</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="branch-section">
+                    <div class="branch-grid">
+                        <div class="branch-card bc-success" onclick="openGlossary('def-success')"><h5>🎯 결제 성공</h5><ul><li>웰컴 로직 가동</li></ul></div>
+                        <div class="branch-card bc-ongoing" onclick="openGlossary('def-ongoing')"><h5>🔄 결정 유예</h5><ul><li>2차 접촉 로직 준비</li></ul></div>
+                        <div class="branch-card bc-error" onclick="openGlossary('def-loss')"><h5>⚠️ 거절/이탈</h5><ul><li>거절 사유 정밀 기록</li></ul></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-block" id="step-2">
+                <div class="step-header"><span class="step-num">02</span><span class="step-title">장애물 분석 및 상의 대응 (Negotiation)</span></div>
+                <div class="step-content-grid">
+                    <div class="content-pane">
+                        <h4>심층 상담 필수 확보 데이터</h4>
+                        <table class="list-table">
+                            <tr><td><input type="checkbox" class="ui-checkbox"> 결정권자</td><td>지불자(부모)와 이용자(학생) 의견 일치도</td></tr>
+                            <tr><td><input type="checkbox" class="ui-checkbox"> 비교 경쟁사</td><td>현재 저울질 중인 타 브랜드 명칭</td></tr>
+                            <tr><td><input type="checkbox" class="ui-checkbox"> 심리적 허들</td><td>수강료, 거리, 엄격한 통제에 대한 공포</td></tr>
+                            <tr><td><input type="checkbox" class="ui-checkbox"> 상의 진척도</td><td>"아이와 상의 시 대화가 멈춘 부분" 파악</td></tr>
+                        </table>
+                    </div>
+                    <div class="content-pane">
+                        <h4>데이터 기반 전략 액션</h4>
+                        <div class="action-item">
+                            <span class="action-tag">비교우위</span> <span class="action-desc">경쟁사 대비 압도적 '한 끗' 자료 투척</span>
+                            <span class="action-detail">고민 중인 [경쟁사] 대비 잇올의 합격 데이터 비교 리포트 전송</span>
+                        </div>
+                        <div class="action-item">
+                            <span class="action-tag">전화</span> <span class="action-desc">부모님 대상 "심리 상담"형 통화</span>
+                            <span class="action-detail">영업이 아닌 입시 전문가로서의 신뢰도 확보에 집중</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="branch-section">
+                    <div class="branch-grid">
+                        <div class="branch-card bc-success" onclick="openGlossary('def-success')"><h5>🎯 결제 성공</h5><ul><li>해피콜 로직 가동</li></ul></div>
+                        <div class="branch-card bc-ongoing" onclick="openGlossary('def-ongoing')"><h5>🔄 결정 유예</h5><ul><li>3차 접촉 로직 준비</li></ul></div>
+                        <div class="branch-card bc-error" onclick="openGlossary('def-loss')"><h5>⚠️ 거절/이탈</h5><ul><li>경쟁사 선택 사유 기록</li></ul></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-block" id="step-3">
+                <div class="step-header"><span class="step-num">03</span><span class="step-title">방문/현장 경험 및 확신 부여 (Experience)</span></div>
+                <div class="step-content-grid">
+                    <div class="content-pane">
+                        <h4>현장 상담 필수 확보 데이터</h4>
+                        <table class="list-table">
+                            <tr><td><input type="checkbox" class="ui-checkbox"> 공간 선호도</td><td>견학 시 반응이 좋았던 좌석 타입</td></tr>
+                            <tr><td><input type="checkbox" class="ui-checkbox"> 시설 만족도</td><td>공기질, 청결도 등 비학습 환경 만족도</td></tr>
+                            <tr><td><input type="checkbox" class="ui-checkbox"> 전문성 체감</td><td>대면 컨설팅 시 고객의 수긍 정도</td></tr>
+                            <tr><td><input type="checkbox" class="ui-checkbox"> 진단 테스트</td><td>성적표 기반 진단 결과에 대한 학생 반응</td></tr>
+                        </table>
+                    </div>
+                    <div class="content-pane">
+                        <h4>데이터 기반 전략 액션</h4>
+                        <div class="action-item">
+                            <span class="action-tag">리마인드</span> <span class="action-desc">방문 전/후 시스템 알림 정교화</span>
+                            <span class="action-detail">방문 전: 주차/약도 안내 | 방문 후: 놓친 질문 해소 팔로업</span>
+                        </div>
+                        <div class="action-item">
+                            <span class="action-tag">솔루션</span> <span class="action-desc">개인별 '잇올 타임테이블' 초안 전송</span>
+                            <span class="action-detail">진단 결과를 반영한 맞춤형 하루 일과표 제안</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="branch-section">
+                    <div class="branch-grid">
+                        <div class="branch-card bc-success" onclick="openGlossary('def-success')"><h5>🎯 결제 성공</h5><ul><li>자리 배정 즉시 확정</li></ul></div>
+                        <div class="branch-card bc-ongoing" onclick="openGlossary('def-ongoing')"><h5>🔄 결정 유예</h5><ul><li>4차 접촉 로직 준비</li></ul></div>
+                        <div class="branch-card bc-error" onclick="openGlossary('def-loss')"><h5>⚠️ 거절/이탈</h5><ul><li>시설 피드백 VOC 기록</li></ul></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-block" id="step-4">
+                <div class="step-header"><span class="step-num">04</span><span class="step-title">희소성 강조 및 압박 (Urgency)</span></div>
+                <div class="step-content-grid">
+                    <div class="content-pane">
+                        <h4>클로징 필수 확보 데이터</h4>
+                        <table class="list-table">
+                            <tr><td><input type="checkbox" class="ui-checkbox"> 실시간 잔여석</td><td>선호 좌석의 실제 남은 수량 데이터</td></tr>
+                            <tr><td><input type="checkbox" class="ui-checkbox"> 혜택 기한</td><td>프로모션 마감일에 대한 고객 인지 여부</td></tr>
+                            <tr><td><input type="checkbox" class="ui-checkbox"> 기회 비용</td><td>지연 시 잃게 되는 학습 골든타임 강조</td></tr>
+                            <tr><td><input type="checkbox" class="ui-checkbox"> 최종 장애물</td><td>결제 안 하는 마지막 단 하나의 의구심</td></tr>
+                        </table>
+                    </div>
+                    <div class="content-pane">
+                        <h4>데이터 기반 전략 액션</h4>
+                        <div class="action-item">
+                            <span class="action-tag">긴급알림</span> <span class="action-desc">마감 임박 실시간 현황 SMS 발송</span>
+                            <span class="action-detail">"어머니, 선호하셨던 좌석이 현재 마지막 1석 남았습니다."</span>
+                        </div>
+                        <div class="action-item">
+                            <span class="action-tag">승부수</span> <span class="action-desc">이탈 방지용 최종 혜택 제안</span>
+                            <span class="action-detail">오늘 자정 마감 기준, 추가 콘텐츠 혜택 등 강력한 데드라인</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="branch-section">
+                    <div class="branch-grid">
+                        <div class="branch-card bc-success" onclick="openGlossary('def-success')"><h5>🎯 결제 성공</h5><ul><li>웰컴 로직 전격 가동</li></ul></div>
+                        <div class="branch-card bc-ongoing" onclick="openGlossary('def-ongoing')"><h5>🔄 결정 유예</h5><ul><li>5차 접촉 로직 준비</li></ul></div>
+                        <div class="branch-card bc-error" onclick="openGlossary('def-loss')"><h5>⚠️ 거절/이탈</h5><ul><li>최종 거절 사유 정밀 분석</li></ul></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-block" id="step-5">
+                <div class="step-header"><span class="step-num">05</span><span class="step-title">최종 종결 및 아카이브 (Check-out)</span></div>
+                <div class="step-content-grid">
+                    <div class="content-pane">
+                        <h4>최종 확정 데이터</h4>
+                        <table class="list-table">
+                            <tr><td><input type="checkbox" class="ui-checkbox"> 상태 재평가</td><td>최종 결제냐 이탈이냐 완전 확정</td></tr>
+                            <tr><td><input type="checkbox" class="ui-checkbox"> 이탈 원인</td><td>가격, 거리, 시설 중 핵심 이유 기록</td></tr>
+                            <tr><td><input type="checkbox" class="ui-checkbox"> 재연락 동의</td><td>"모평 분석 자료 수신 희망" 여부 확인</td></tr>
+                        </table>
+                    </div>
+                    <div class="content-pane">
+                        <h4>데이터 기반 전략 액션</h4>
+                        <div class="action-item">
+                            <span class="action-tag">전산</span> <span class="action-desc">시트 상태값을 '완전 종결'로 업데이트</span>
+                            <span class="action-detail">영업본부 내부 분석 리포트 소스로 자동 이관</span>
+                        </div>
+                        <div class="action-item">
+                            <span class="action-tag">작별</span> <span class="action-desc">품격 있는 마무리 및 시즌 정보 약속</span>
+                            <span class="action-detail">미래의 가망 고객으로 관계를 훈훈하게 마무리</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="tab2" class="tab-content">
+        <div class="logic-blank-box"><h3>웰컴 로직 (Welcome Logic)</h3><p>※ 결제 성공 시 고객에게 발송되는 최초 안내 및 환영 프로세스 정의 영역입니다.</p></div>
+        <div class="logic-blank-box"><h3>해피콜 로직 (Happy-call Logic)</h3><p>※ 등원 전/후 학생 및 학부모의 안심을 위한 케어 연락 프로세스 정의 영역입니다.</p></div>
+        <div class="logic-blank-box"><h3>접촉 로직 (Contact Logic)</h3><p>※ 결정 유예 고객을 끈질기게 추적하는 통화 및 문자 발송 프로세스 정의 영역입니다.</p></div>
+        <div class="logic-blank-box"><h3>굿바이 로직 (Goodbye Logic)</h3><p>※ 최종 거절/이탈 시 정중한 마무리 및 향후 리마케팅 DB 전환 프로세스 정의 영역입니다.</p></div>
+    </div>
+
+    <div id="tab3" class="tab-content">
+        <div class="glossary-item" id="def-success">
+            <span class="glossary-term">결제 성공 (Conversion)</span>
+            <p class="glossary-def">최종 등록 의사를 밝히고 수강료 결제를 완료한 상태입니다. 모든 세일즈 접촉은 즉시 중단되며, 원활한 등원을 위한 웰컴 프로세스로 전환됩니다.</p>
+        </div>
+        <div class="glossary-item" id="def-ongoing">
+            <span class="glossary-term">결정 유예 (Retention / Pending)</span>
+            <p class="glossary-def">명확한 거절은 없으나 확답을 미루는 상태입니다. 이 단계가 영업의 핵심이며, 잇올의 5차 접촉 로직을 가동하여 집요하게 고민을 해결해줘야 합니다.</p>
+        </div>
+        <div class="glossary-item" id="def-loss">
+            <span class="glossary-term">거절/이탈 (Dropout)</span>
+            <p class="glossary-def">타 학원 등록 확정 또는 명확한 거절 상태입니다. 사유를 정밀 분석하여 향후 리마케팅 기회를 도모하는 아카이브 단계로 이동합니다.</p>
+        </div>
+        <div class="glossary-item" id="def-step1">
+            <span class="glossary-term">탐색 및 결핍 진단 (Discovery)</span>
+            <p class="glossary-def">고객의 현재 성적과 학습 환경에서의 결핍을 파악하여 '잇올이 필요한 이유'를 찾아내는 상담의 첫 단추입니다.</p>
+        </div>
+        <div class="glossary-item" id="def-step2">
+            <span class="glossary-term">장애물 분석 (Negotiation)</span>
+            <p class="glossary-def">비용, 거리, 규정 등 등록을 방해하는 실질적 요인을 파악하고 해결책(대안)을 제시하는 협상 단계입니다.</p>
+        </div>
+        <div class="glossary-item" id="def-step3">
+            <span class="glossary-term">현장 경험 (Experience)</span>
+            <p class="glossary-def">시설 견학 및 전문가 컨설팅을 통해 잇올의 관리 시스템을 직접 체감하게 하여 확신을 주는 단계입니다.</p>
+        </div>
+        <div class="glossary-item" id="def-step4">
+            <span class="glossary-term">희소성 강조 (Urgency)</span>
+            <p class="glossary-def">마감 임박 데이터나 한정 혜택을 고지하여 고객의 결정 속도를 높이는 심리적 클로징 전략입니다.</p>
+        </div>
+        <div class="glossary-item" id="def-step5">
+            <span class="glossary-term">최종 종결 (Check-out)</span>
+            <p class="glossary-def">5회차 필수 시도가 완료된 후 등록 여부를 최종 판정하고 데이터를 영구 자산화하는 마무리 단계입니다.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openTab(evt, tabName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabcontent.length; i++) tabcontent[i].classList.remove("active");
+        tablinks = document.getElementsByClassName("tab-btn");
+        for (i = 0; i < tablinks.length; i++) tablinks[i].classList.remove("active");
+        document.getElementById(tabName).classList.add("active");
+        if (evt && evt.currentTarget) evt.currentTarget.classList.add("active");
+        else if (tabName === 'tab3') document.getElementById('glossary-tab-btn').classList.add("active");
+        else if (tabName === 'tab1') document.querySelector('.tab-btn:nth-child(1)').classList.add("active");
+    }
+
+    function handleStepClick(e, targetId) {
+        e.preventDefault();
+        openTab(null, 'tab1');
+        setTimeout(function() {
+            var element = document.getElementById(targetId);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                var blocks = document.getElementsByClassName("step-block");
+                for (var i = 0; i < blocks.length; i++) blocks[i].classList.remove("highlight-active");
+                void element.offsetWidth;
+                element.classList.add("highlight-active");
+            }
+        }, 100);
+    }
+
+    function openGlossary(targetId) {
+        openTab(null, 'tab3');
+        setTimeout(function() {
+            var element = document.getElementById(targetId);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                var items = document.getElementsByClassName("glossary-item");
+                for (var i = 0; i < items.length; i++) items[i].classList.remove("highlight-glow-active");
+                void element.offsetWidth;
+                element.classList.add("highlight-glow-active");
+            }
+        }, 150);
+    }
+</script>
+
+</body>
+</html>
